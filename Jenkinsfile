@@ -22,7 +22,9 @@ pipeline {
       echo "JOB_NAME       : $JOB_NAME"
       echo "BUILD_NUMBER   : $BUILD_NUMBER"
       echo "GIT_COMMIT     : ${GIT_COMMIT:-N/A}"
-      echo "GIT_BRANCH     : $(git rev-parse --abbrev-ref HEAD)"
+      #echo "GIT_BRANCH     : $(git rev-parse --abbrev-ref HEAD)"
+      echo "GIT_BRANCHES   :"
+      git branch -a | sed 's/^/* /'
       '''
       }
     }
