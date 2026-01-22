@@ -49,15 +49,6 @@ pipeline {
       }
     }
 
-    stage('Fail Demo') {
-  steps {
-    sh '''
-      echo "Forcing failure to practice debugging..."
-      exit 1
-    '''
-  }
-}
-
   }
 
   post {
