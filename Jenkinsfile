@@ -17,11 +17,13 @@ pipeline {
 
     stage('Info') {
       steps {
-        echo "APP_NAME      : ${APP_NAME}"
-        echo "JOB_NAME       : ${env.JOB_NAME}"
-        echo "BUILD_NUMBER   : ${env.BUILD_NUMBER}"
-        echo "BRANCH_NAME    : ${env.BRANCH_NAME ?: 'N/A'}"
-        echo "GIT_COMMIT     : ${env.GIT_COMMIT ?: 'N/A'}"
+      sh '''
+      echo "APP_NAME      : $APP_NAME"
+      echo "JOB_NAME       : $JOB_NAME"
+      echo "BUILD_NUMBER   : $BUILD_NUMBER"
+      echo "GIT_COMMIT     : ${GIT_COMMIT:-N/A}"
+      echo "GIT_BRANCH     : $(git rev-parse --abbrev-ref HEAD)"
+      '''
       }
     }
 
