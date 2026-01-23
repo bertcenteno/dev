@@ -60,7 +60,7 @@ pipeline {
 	steps {
 		sh '''
 			set -e
-			docker build -t devops-dev:${BUILD_NUMNBER} .
+			docker build -t devops-demo:${BUILD_NUMNBER} .
 			docker images | head
 		   '''
 	}
