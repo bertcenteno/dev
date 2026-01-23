@@ -67,17 +67,40 @@ pipeline {
 		      }
     }
 
-    stage('Docker Run (Smoke Test)') {
-	steps {
-	    sh(label: 'Docker Run', script: '''#!/usr/bin/env bash
+  stage('Docker Run (Smoke Test)') {
+	  steps {
+	    sh(label: 'Docker Run + Debug', script: '''#!/usr/bin/env bash
 	      set -euo pipefail
+
 	      docker rm -f devops-demo >/dev/null 2>&1 || true
+
+	      echo "Starting container..."
 	      docker run -d --name devops-demo -p 8081:8081 devops-demo:$BUILD_NUMBER
-	      sleep 2
-	      curl -s http://127.0.0.1:8081 | head -n 1
+
+	      echo "Container status:"
+	      docker ps -a --filter "name=devops-demo" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+	      echo "Waiting for app..."
+	      for i in {1..10}; do
+	        OUT=$(curl -s --max-time 2 http://127.0.0.1:8081 || true)
+	        if [ -n "$OUT" ]; then
+	          echo "CURL OUTPUT: $OUT"
+	          exit 0
+	        fi
+	        sleep 1
+	      done
+
+	      echo "❌ No response from app. Showing logs:"
+	      docker logs --tail 200 devops-demo || true
+
+	      echo "Inspecting container..."
+	      docker inspect devops-demo --format 'State={{json .State}}' || true
+
+	      exit 1
 	    ''')
-    	}
-     }
+	  }
+	}
+ 
 
   }
 
