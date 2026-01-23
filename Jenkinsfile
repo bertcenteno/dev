@@ -60,7 +60,7 @@ pipeline {
 	steps {
 		sh '''
 			set -e
-			docker build -t devops-demo:${BUILD_NUMNBER} .
+			docker build -t devops-dev:${BUILD_NUMNBER} .
 			docker images | head
 		   '''
 	}
@@ -70,7 +70,7 @@ pipeline {
 	steps {
 	    sh '''
 	      set -e
-	      docker rm -f devops-demo || true
+	      docker rm -f devops-dev || true
 	      docker run -d --name devops-demo -p 8081:8081 devops-demo:${BUILD_NUMBER}
 	      sleep 2
 	      curl -s http://127.0.0.1:8081 | head -n 1
