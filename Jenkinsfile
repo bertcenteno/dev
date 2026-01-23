@@ -84,7 +84,9 @@ pipeline {
   post {
     success { echo "✅ Pipeline succeeded" }
     failure { echo "❌ Pipeline failed" }
-    always  { echo "Finished: ${currentBuild.currentResult}" }
+    always  {
+	sh 'docker rm -f devops-demo || true'
+    echo "Finished: ${currentBuild.currentResult}" }
   }
 }
 
