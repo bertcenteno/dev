@@ -58,10 +58,11 @@ pipeline {
     
     stage('Docker Build') {
 	steps {
+		SHORT_SHA=$(git rev-parse --short HEAD)
 		sh(label: 'Docker Build', script: '''#!/usr/bin/env bash
 		set -euo pipefail
 		      echo "BUILD_NUMBER=$BUILD_NUMBER"
-		      docker build -t devops-demo:$BUILD_NUMBER .
+		      docker build -t devops-demo:${BUILD_NUMBER}-${SHORT_SHA} .
 		      docker images | head
 		''')
 		      }
