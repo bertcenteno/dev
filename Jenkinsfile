@@ -58,25 +58,25 @@ pipeline {
     
     stage('Docker Build') {
 	steps {
-		sh '''
-			set -e
-			echo "BUILD_NUMBER from Jenkins env = ${env.BUILD_NUMBER}"
-			docker build -t devops-demo:${env.BUILD_NUMNBER} .
-			docker images | head
-		   '''
-	}
+		sh(label: 'Docker Build', script: '''#!/usr/bin/env bash
+		set -euo pipefail
+		      echo "BUILD_NUMBER=$BUILD_NUMBER"
+		      docker build -t devops-demo:$BUILD_NUMBER .
+		      docker images | head
+		''')
+		      }
     }
 
     stage('Docker Run (Smoke Test)') {
 	steps {
-	    sh '''
-	      set -e
-	      docker rm -f devops-dev || true
-	      docker run -d --name devops-demo -p 8081:8081 devops-demo:${env.BUILD_NUMBER}
+	    sh(label: 'Docker Run', script: '''#!/usr/bin/env bash
+	      set -euo pipefail
+	      docker rm -f devops-demo || true
+	      docker run -d --name devops-demo -p 8081:8081 devops-demo:$BUILD_NUMBER
 	      sleep 2
 	      curl -s http://127.0.0.1:8081 | head -n 1
-	      '''
- 	}
+	    ''')
+    	}
      }
 
   }
