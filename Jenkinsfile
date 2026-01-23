@@ -71,7 +71,7 @@ pipeline {
 	steps {
 	    sh(label: 'Docker Run', script: '''#!/usr/bin/env bash
 	      set -euo pipefail
-	      docker rm -f devops-demo || true
+	      docker rm -f devops-demo >/dev/null 2>&1 || true
 	      docker run -d --name devops-demo -p 8081:8081 devops-demo:$BUILD_NUMBER
 	      sleep 2
 	      curl -s http://127.0.0.1:8081 | head -n 1
