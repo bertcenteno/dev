@@ -55,6 +55,28 @@ pipeline {
 	}
 
     }
+    
+    stage('Docker Build') {
+	steps {
+		sh '''
+			set -e
+			docker build -t devops-demo:${BUILD_NUMNBER} .
+			docker images | head
+		   '''
+	}
+    }
+
+    stage('Docker Run (Smoke Test)') {
+	steps {
+	    sh '''
+	      set -e
+	      docker rm -f devops-demo || true
+	      docker run -d --name devops-demo -p 8081:8081 devops-demo:${BUILD_NUMBER}
+	      sleep 2
+	      curl -s http://127.0.0.1:8081 | head -n 1
+	      '''
+ 	}
+     }
 
   }
 
